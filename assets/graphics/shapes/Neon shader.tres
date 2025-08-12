@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://7cvjenelroda"]
+
+[ext_resource type="Shader" uid="uid://ctyrhyqjmvcb4" path="res://assets/graphics/shapes/NeonShader.gdshader" id="1_df1px"]
+
+[resource]
+shader = ExtResource("1_df1px")
+shader_parameter/neon_color = Vector4(0, 0, 0, 0)
+shader_parameter/dodge_strength = 1.0
+shader_parameter/overlay_color = Vector4(1, 0, 0, 1)
+shader_parameter/overlay_strength = 0.0

@@ -1,0 +1,9 @@
+# Godot specific
+.import/
+export.cfg
+export_presets.cfg
+.godot/
+
+# OS specific
+.DS_Store
+Thumbs.db

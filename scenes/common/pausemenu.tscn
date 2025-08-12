@@ -1,0 +1,63 @@
+[gd_scene load_steps=4 format=3 uid="uid://cgoo2egcmmdiw"]
+
+[ext_resource type="Script" uid="uid://dis2jh7sq006q" path="res://scenes/common/pausemenu.gd" id="1_ufoj7"]
+
+[sub_resource type="Gradient" id="Gradient_3386d"]
+offsets = PackedFloat32Array(0, 0.0060241, 0.481928)
+colors = PackedColorArray(0.473976, 0.473976, 0.473976, 1, 0.47451, 0.47451, 0.47451, 1, 0.501407, 0.501406, 0.501406, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ufoj7"]
+gradient = SubResource("Gradient_3386d")
+
+[node name="Pausemenu" type="Popup"]
+process_mode = 2
+size = Vector2i(1280, 720)
+visible = true
+mouse_passthrough = true
+content_scale_size = Vector2i(1, 2)
+script = ExtResource("1_ufoj7")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+top_level = true
+clip_children = 1
+z_index = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -417.0
+offset_top = -221.5
+offset_right = 417.0
+offset_bottom = 221.5
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Weiter" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 100
+text = "Weiter"
+
+[node name="Level Neustarten" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 100
+text = "Level Neustarten"
+
+[node name="Zurück zum Hauptmenü" type="Button" parent="VBoxContainer"]
+process_mode = 2
+layout_mode = 2
+theme_override_font_sizes/font_size = 100
+text = "Zum Hauptmenü"
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer"]
+position = Vector2(642, 360)
+scale = Vector2(-5.10142, 749.467)
+texture = SubResource("GradientTexture1D_ufoj7")
+
+[connection signal="pressed" from="VBoxContainer/Weiter" to="." method="_on_weiter_pressed"]
+[connection signal="pressed" from="VBoxContainer/Level Neustarten" to="." method="_on_level_neustarten_pressed"]
+[connection signal="pressed" from="VBoxContainer/Zurück zum Hauptmenü" to="." method="_on_zurück_zum_hauptmenü_pressed"]

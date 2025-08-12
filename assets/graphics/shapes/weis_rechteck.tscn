@@ -1,0 +1,197 @@
+[gd_scene load_steps=13 format=3 uid="uid://bvdd77cxvrgex"]
+
+[ext_resource type="Script" uid="uid://d2ajiuvvblblb" path="res://scripts/Rechteck.gd" id="1_cs4sb"]
+[ext_resource type="Shader" uid="uid://b02y0vfay8jp7" path="res://assets/graphics/shapes/test.gdshader" id="2_cs4sb"]
+[ext_resource type="Texture2D" uid="uid://by2p5u6reomfb" path="res://assets/graphics/shapes/Rechteck_gausch.png" id="3_rbsi3"]
+[ext_resource type="Texture2D" uid="uid://dfe776su7bkqi" path="res://assets/graphics/shapes/Rechteck.png" id="4_ad5wv"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_kyoen"]
+radius = 85.0
+
+[sub_resource type="Shader" id="Shader_cs4sb"]
+resource_local_to_scene = true
+code = "shader_type canvas_item;
+render_mode unshaded, blend_mix;
+
+// ---------------------------
+// 1) Parameter für den \"Smear\"-Effekt
+// ---------------------------
+uniform float smear_strength : hint_range(0.0, 1.0) = 0.7;  // Wie stark wird der Blur/Effekt ins Bild gemischt
+uniform float smear_length : hint_range(0.0, 0.5) = 0.15;   // Maximale Versetzung in UV-Einheiten
+uniform float smear_speed  : hint_range(0.0, 10.0) = 2.0;   // Schnelligkeit der oszillierenden Verschiebung
+uniform int sample_count   : hint_range(2, 32) = 16;        // Anzahl der Samples
+uniform float oscillation_amplitude : hint_range(0.0, 0.1) = 0.02; // Zusätzliche zeitbasierte oszillierende Verschiebung
+
+// ---------------------------
+// 2) Parameter für den \"Rays\"-Effekt
+// ---------------------------
+uniform vec4 ray_color = vec4(1.0, 1.0, 0.0, 1.0); // Farbe der Rays
+uniform float ray_count : hint_range(1.0, 50.0) = 12.0;         // Anzahl der Strahlen (Zacken)
+uniform float ray_amplitude : hint_range(0.0, 0.5) = 0.1;       // Modulation der Strahlenlänge
+uniform float ray_speed  : hint_range(0.0, 10.0) = 1.0;         // Geschwindigkeit der Ray-Animation
+uniform float ray_glow_start : hint_range(0.0, 1.0) = 0.5;      // Ab welchem radialen Abstand beginnen die Rays
+uniform float ray_glow_end   : hint_range(0.0, 2.0) = 0.9;      // Ab welchem Abstand verflacht der Effekt
+
+// ---------------------------
+// 3) Kombinierter Shader-Code
+// ---------------------------
+void fragment() {
+    // Annahme: Der Sprite ist zentriert bei (0.5, 0.5)
+    vec2 center = vec2(0.5, 0.5);
+    vec2 diff = UV - center;
+    float dist = length(diff);
+    vec2 dir = (dist > 0.001) ? normalize(diff) : vec2(0.0, 0.0);
+
+    // --- Smear-Effekt: Mehrfach-Sampling entlang der radials verlaufenden Richtung ---
+    vec4 smearAccum = vec4(0.0);
+    float weightSum = 0.0;
+    for (int i = 0; i < sample_count; i++) {
+        float t = float(i) / float(sample_count - 1);
+        // Zusätzliches zeitabhängiges Schwanken (Oszillation) für dynamische Bewegung:
+        float oscillation = sin(TIME * smear_speed + t * 6.2831853) * oscillation_amplitude;
+        vec2 sampleUV = UV + dir * (smear_length * t + oscillation);
+        // Gewichtung: Pixel nahe dem Original zählen stärker
+        float weight = pow(1.0 - t, 2.0);
+        smearAccum += texture(TEXTURE, sampleUV) * weight;
+        weightSum += weight;
+    }
+    vec4 smearColor = smearAccum / weightSum;
+    vec4 baseColor = texture(TEXTURE, UV);
+    // Mix des Originals mit dem Smear-Effekt
+    vec4 finalSmear = mix(baseColor, smearColor, smear_strength);
+
+    // --- Rays-Effekt: Erzeuge dynamisch modulierte Lichtstrahlen ---
+    float angle = atan(diff.y, diff.x);
+    if (angle < 0.0) {
+        angle += 6.2831853;  // Sicherstellen, dass der Winkel im Bereich [0, 2π] liegt
+    }
+    // Sinus-Oszillation, die pro Winkel den \"Strahlen\"-Effekt moduliert
+    float rayWave = sin(ray_count * angle + TIME * ray_speed) * ray_amplitude;
+    // Abhängig vom radialen Abstand wird der Effekt nur im Bereich der Sprite-Ränder sichtbar
+    float rayFade = 1.0 - smoothstep(ray_glow_start, ray_glow_end, dist);
+    vec4 rayEffect = vec4(ray_color.rgb, 1.0) * rayWave * rayFade * 1.5;
+
+    // --- Finale Mischung: Beide Effekte additiv kombinieren ---
+    // Hier additiv, sodass die Lichtstrahlen den veränderten Sprite \"ausstrahlen\"
+    vec4 combined = finalSmear + rayEffect;
+    // Alpha des Originals (oder finalSmear) beibehalten
+    combined.a = baseColor.a;
+
+    COLOR = combined;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rbsi3"]
+shader = SubResource("Shader_cs4sb")
+shader_parameter/smear_strength = 0.0
+shader_parameter/smear_length = 0.0
+shader_parameter/smear_speed = 0.0
+shader_parameter/sample_count = 2
+shader_parameter/oscillation_amplitude = 0.0
+shader_parameter/ray_color = Vector4(1, 1, 1, 1)
+shader_parameter/ray_count = 10.353
+shader_parameter/ray_amplitude = 0.272
+shader_parameter/ray_speed = 1.0
+shader_parameter/ray_glow_start = 0.139
+shader_parameter/ray_glow_end = 1.495
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_qvses"]
+blend_mode = 1
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_u53wp"]
+shader = ExtResource("2_cs4sb")
+shader_parameter/smear_strength = 0.7
+shader_parameter/smear_length = 0.041
+shader_parameter/smear_speed = 2.0
+shader_parameter/sample_count = 29
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_tekn0"]
+blend_mode = 1
+
+[sub_resource type="Shader" id="Shader_ad5wv"]
+code = "shader_type canvas_item;
+render_mode unshaded, blend_add;
+
+uniform vec4 neon_color  = vec4(0.0, 1.0, 0.8, 1.0);
+uniform float dodge_strength : hint_range(0.0, 1.0) = 0.5;
+uniform vec4 overlay_color = vec4(1.0, 0.0, 0.0, 1.0);
+uniform float overlay_strength : hint_range(0.0, 1.0) = 0.0;
+
+vec3 color_dodge(vec3 base, vec3 blend) {
+    vec3 result = vec3(0.0);
+    for (int i = 0; i < 3; i++) {
+        if (blend[i] >= 1.0 - 0.0001) {
+            result[i] = 1.0;
+        } else {
+            result[i] = clamp(base[i] / (1.0 - blend[i]), 0.0, 1.0);
+        }
+    }
+    return result;
+}
+
+void fragment() {
+    // Hole die Basisfarbe – bei weißen Formen sollte dies fast 1.0 ergeben.
+    vec4 tex_color = texture(TEXTURE, UV);
+    // Berechne den Neon-Dodge-Effekt:
+    vec3 dodge_result = color_dodge(tex_color.rgb, neon_color.rgb * dodge_strength);
+    // Mische den Dodge-Effekt mit dem Overlay-Farbwert, gesteuert durch overlay_strength:
+    vec3 final_color = mix(dodge_result, overlay_color.rgb, overlay_strength);
+    COLOR = vec4(final_color, tex_color.a);
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cd87o"]
+shader = SubResource("Shader_ad5wv")
+shader_parameter/neon_color = Vector4(0, 1, 0.8, 1)
+shader_parameter/dodge_strength = 0.5
+shader_parameter/overlay_color = Vector4(1, 0, 0, 1)
+shader_parameter/overlay_strength = 0.0
+
+[node name="weis_rechteck" type="Area2D"]
+collision_layer = 512
+collision_mask = 512
+script = ExtResource("1_cs4sb")
+
+[node name="10" type="CollisionShape2D" parent="."]
+position = Vector2(0, -1)
+shape = SubResource("CircleShape2D_kyoen")
+
+[node name="Rechteck_gausch" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0.466667)
+material = SubResource("ShaderMaterial_rbsi3")
+scale = Vector2(0.09, 0.09)
+texture = ExtResource("3_rbsi3")
+
+[node name="Rechteck" type="Sprite2D" parent="Rechteck_gausch"]
+modulate = Color(1, 1, 1, 0.160784)
+material = SubResource("CanvasItemMaterial_qvses")
+texture = ExtResource("4_ad5wv")
+
+[node name="Rechteck_gausch2" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0.462745)
+material = SubResource("ShaderMaterial_u53wp")
+scale = Vector2(0.09, 0.09)
+texture = ExtResource("3_rbsi3")
+
+[node name="Rechteck2" type="Sprite2D" parent="Rechteck_gausch2"]
+modulate = Color(1, 1, 1, 0.435294)
+material = SubResource("CanvasItemMaterial_tekn0")
+scale = Vector2(1.33, 1.33)
+texture = ExtResource("4_ad5wv")
+
+[node name="Rechteck_gausch3" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+visible = false
+modulate = Color(1, 1, 1, 0.65098)
+material = SubResource("ShaderMaterial_cd87o")
+scale = Vector2(0.09, 0.09)
+texture = ExtResource("3_rbsi3")
+
+[node name="Rechteck2" type="Sprite2D" parent="Rechteck_gausch3"]
+visible = false
+modulate = Color(1, 1, 1, 0.435294)
+material = SubResource("CanvasItemMaterial_tekn0")
+scale = Vector2(1.33, 1.33)
+texture = ExtResource("4_ad5wv")

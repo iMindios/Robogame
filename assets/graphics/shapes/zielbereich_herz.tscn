@@ -1,0 +1,52 @@
+[gd_scene load_steps=7 format=3 uid="uid://bay3nwvtfrouj"]
+
+[ext_resource type="Shader" uid="uid://ctyrhyqjmvcb4" path="res://assets/graphics/shapes/NeonShader.gdshader" id="2_mwu1x"]
+[ext_resource type="Texture2D" uid="uid://5jawu0gnpta5" path="res://assets/graphics/shapes/Herz_gausch.png" id="3_mwu1x"]
+[ext_resource type="Texture2D" uid="uid://biwdopyynqonc" path="res://assets/graphics/shapes/Herz.png" id="4_1v1p2"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vmsas"]
+radius = 85.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_t33jq"]
+shader = ExtResource("2_mwu1x")
+shader_parameter/neon_color = Vector4(0, 0, 0, 0)
+shader_parameter/dodge_strength = 1.0
+shader_parameter/overlay_color = Vector4(1, 1, 1, 1)
+shader_parameter/overlay_strength = 0.757
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_h0acm"]
+blend_mode = 1
+
+[node name="zielbereich_herz" type="Area2D"]
+collision_layer = 8192
+collision_mask = 8192
+input_pickable = false
+
+[node name="14" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_vmsas")
+
+[node name="Herz_gausch" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_t33jq")
+scale = Vector2(0.09, 0.09)
+texture = ExtResource("3_mwu1x")
+
+[node name="Herz" type="Sprite2D" parent="Herz_gausch"]
+modulate = Color(1, 1, 1, 0.176471)
+material = SubResource("CanvasItemMaterial_h0acm")
+texture = ExtResource("4_1v1p2")
+
+[node name="Herz_gausch2" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_t33jq")
+scale = Vector2(0.09, 0.09)
+texture = ExtResource("3_mwu1x")
+
+[node name="Herz" type="Sprite2D" parent="Herz_gausch2"]
+modulate = Color(1, 1, 1, 0.113725)
+material = SubResource("CanvasItemMaterial_h0acm")
+texture = ExtResource("4_1v1p2")
+
+[node name="Herz2" type="Sprite2D" parent="Herz_gausch2"]
+modulate = Color(1, 1, 1, 0.231373)
+material = SubResource("CanvasItemMaterial_h0acm")
+scale = Vector2(1.2, 1.2)
+texture = ExtResource("4_1v1p2")

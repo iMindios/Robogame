@@ -1,0 +1,49 @@
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://bm0i38eb73x2i"]
+
+[ext_resource type="FontFile" uid="uid://cw6tqfqfotd3w" path="res://assets/fonts/Chewy-Regular.ttf" id="1_k2ym7"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4iqmu"]
+content_margin_left = 12.0
+content_margin_top = 25.0
+content_margin_right = 20.0
+content_margin_bottom = 25.0
+bg_color = Color(0.62, 0.613387, 0.2232, 1)
+corner_radius_top_left = 60
+corner_radius_top_right = 60
+corner_radius_bottom_right = 60
+corner_radius_bottom_left = 60
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oy38q"]
+bg_color = Color(0.35, 0.346267, 0.126, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k2ym7"]
+content_margin_left = 12.0
+content_margin_top = 25.0
+content_margin_right = 20.0
+content_margin_bottom = 25.0
+bg_color = Color(0.08, 0.08, 0.08, 1)
+corner_radius_top_left = 60
+corner_radius_top_right = 60
+corner_radius_bottom_right = 60
+corner_radius_bottom_left = 60
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xutl4"]
+content_margin_left = 12.0
+content_margin_top = 25.0
+content_margin_right = 20.0
+content_margin_bottom = 25.0
+bg_color = Color(0.35, 0.346267, 0.126, 1)
+corner_radius_top_left = 60
+corner_radius_top_right = 60
+corner_radius_bottom_right = 60
+corner_radius_bottom_left = 60
+
+[resource]
+default_font = ExtResource("1_k2ym7")
+default_font_size = 23
+Button/constants/outline_size = 0
+Button/fonts/font = ExtResource("1_k2ym7")
+Button/styles/hover = SubResource("StyleBoxFlat_4iqmu")
+Button/styles/hover_pressed = SubResource("StyleBoxFlat_oy38q")
+Button/styles/normal = SubResource("StyleBoxFlat_k2ym7")
+Button/styles/pressed = SubResource("StyleBoxFlat_xutl4")

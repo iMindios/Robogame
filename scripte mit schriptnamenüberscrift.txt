@@ -1,0 +1,270 @@
+// Mainmenu.gd
+extends CanvasLayer
+
+func _on_play_pressed() -> void:
+	print(">>> START gedrückt!")
+	var path := "res://scenes/levelselect/levelselect.tscn"
+	print("Lade Szene:", path)
+	var err = get_tree().change_scene_to_file(path)
+	if err != OK:
+		push_error("change_scene fehlgeschlagen: %s" % err)
+		print("Error code:", err)
+		
+func _on_beenden_pressed() -> void:
+	get_tree().quit()
+
+
+//TransitionManager.gd
+extends Node
+
+# Wird über Project → Project Settings → AutoLoad als "Transition" registriert
+@onready var overlay_scene := preload("res://scenes/leveltween.tscn")
+
+func _ready() -> void:
+	print("[TransitionManager] Ready, overlay_scene =", overlay_scene)
+
+func transition_to(path: String) -> void:
+	# Debug-Ausgabe, damit wir sehen, ob hier jeder Klick ankommt
+	print("[TransitionManager] transition_to called with:", path)
+
+	# 1) Jedes Mal eine frische Instanz holen
+	var overlay := overlay_scene.instantiate() as CanvasLayer
+	print("[TransitionManager]  Instantiated overlay:", overlay)
+
+	# 2) Sofort ins Root einhängen
+	get_tree().get_root().add_child(overlay)
+
+	# 3) Deferred starten, damit der Overlay-CanvasLayer komplett initialisiert ist
+	overlay.call_deferred("start_transition", path)
+
+
+//Level_tween.gd
+extends CanvasLayer
+
+func start_transition(path: String) -> void:
+	# Overlay-Control holen
+	var overlay_control := $Overlay as Control
+	if not overlay_control:
+		push_error("❌ [LevelTween] Overlay-Node nicht gefunden!")
+		return
+
+	# AnimationPlayer holen
+	var anim_player := overlay_control.get_node("AnimationPlayer") as AnimationPlayer
+	if not anim_player:
+		push_error("❌ [LevelTween] AnimationPlayer nicht gefunden!")
+		return
+
+	# Debug: Pfad und Existenz prüfen
+	print("[LevelTween] Pfad zum Laden: %s" % path)
+	if not ResourceLoader.exists(path, "PackedScene"):
+		push_error("❌ [LevelTween] Szene existiert nicht: %s" % path)
+		return
+
+	# Fade-In abspielen
+	overlay_control.visible = true
+	print("[LevelTween] Fade-In start")
+	anim_player.play("Fade_in")
+	await anim_player.animation_finished
+	print("[LevelTween] Fade-In fertig")
+
+	# Szenenwechsel synchron ausführen und Fehler prüfen
+	print("[LevelTween] Wechsel zu Szene: %s" % path)
+	var err := get_tree().change_scene_to_file(path)
+	if err != OK:
+		push_error("❌ change_scene fehlgeschlagen: %d" % err)
+		return
+
+	# Kurze Wartezeit, bis die neue Szene bereit ist
+	await get_tree().process_frame
+
+	# Fade-Out abspielen
+	if anim_player.has_animation("Fade_out"):
+		print("[LevelTween] Fade-Out start")
+		anim_player.play("Fade_out")
+		await anim_player.animation_finished
+		print("[LevelTween] Fade-Out fertig")
+	else:
+		push_error("❌ AnimationPlayer kennt keine 'Fade_out'-Animation!")
+
+	# Overlay entfernen
+	queue_free()
+
+
+//level_complete_overlay.gd
+extends Control
+
+func _on_button_pressed() -> void:
+	get_tree().change_scene_to_file("res://scenes/levelselect/levelselect.tscn")
+
+//levelselect.gd
+extends Control
+
+@onready var grid := $GridContainer
+
+func _ready() -> void:
+	print("[LevelSelect] Ready, Buttons under:", grid.get_children())
+	for btn in grid.get_children():
+		if btn is Button:
+			# Godot 4: bind() liefert ein Callable mit gebundenen Argumenten
+			# und wird direkt an connect() übergeben :contentReference[oaicite:0]{index=0}
+			btn.pressed.connect(_on_level_pressed.bind(btn.name))
+
+func _on_level_pressed(level_name: String) -> void:
+	print("[LevelSelect] Button pressed:", level_name)
+	var num := level_name.get_slice("_", 1)
+	# Zero‑Padding für Einzelstellen
+	if num.length() == 1:
+		num = "0" + num
+	var scene_path := "res://scenes/LevelSelect/level_%s.tscn" % num
+	Transition.transition_to(scene_path)
+	
+
+
+//Dreieck.gd  (formen haben den gleichen script unterscheiden sich nur in Formnamen)
+extends Area2D
+signal form_completed
+
+# Definiere eine exportierte Variable, damit du den Zielbereichsnamen im Editor setzen kannst.
+@export var target_zone_name: String = "zielbereich_dreieck"
+
+var dragging := false
+var drag_offset := Vector2.ZERO
+var locked := false
+
+func _process(delta):
+	if dragging and not locked:
+		global_position = get_global_mouse_position() + drag_offset
+
+func _input_event(viewport, event, shape_idx):
+	if locked:
+		return
+
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed:
+			dragging = true
+			drag_offset = global_position - event.position
+		else:
+			dragging = false
+			# Prüfe, ob sich in den überlappenden Areas der passende Zielbereich befindet.
+			for area in get_overlapping_areas():
+				if area.name == target_zone_name:
+					var tween = create_tween()
+					tween.tween_property(self, "global_position", area.global_position, 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+					tween.tween_property(self, "scale", self.scale * 2, 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+					tween.tween_callback(Callable(self, "lock"))
+					break
+					
+func lock():
+	locked = true
+	set_process_input(false)
+	print("lock() wurde aufgerufen – versende form_completed Signal")
+	emit_signal("form_completed")
+
+
+
+//Level_03.gd  			(Level_01 bis LEvel_10 sind in script gleich nur die Formen werden angepasst)
+extends Node2D
+
+# Zähler für abgeschlossene Formen in der aktuellen Runde.
+var form_completed := 0
+# Aktuelle Runde (Index in rounds, beginnt bei 0).
+var current_round := 0
+
+# Basis-Array mit den Formpfaden (diese Reihenfolge wird für jede Runde neu gemischt).
+var base_shapes = [
+	"res://assets/graphics/shapes/weis_dreieck.tscn",
+	"res://assets/graphics/shapes/weis_quadrat.tscn",
+	"res://assets/graphics/shapes/weis_kreis.tscn"
+]
+
+# Anzahl an Runden, die gespielt werden sollen.
+var num_rounds := 4
+# Array, in dem jede Runde als Zufallsreihenfolge der base_shapes gespeichert wird.
+var rounds = []
+
+var overlay = null
+var PauseMenuScene = preload("res://scenes/common/pausemenu.tscn")
+var pause_menu = null
+
+# Speichert die originalen Positionen der Formen (aus Runde 1)
+var original_positions = []
+
+func _ready():
+	# Initialisiere den Zufallsgenerator.
+	randomize()
+	
+	overlay = $Overlay
+	pause_menu = PauseMenuScene.instantiate()
+	add_child(pause_menu)
+	pause_menu.visible = false
+	overlay.visible = false
+	
+	# Generiere für jede Runde eine zufällige Reihenfolge der Formen.
+	for round_index in range(num_rounds):
+		# Erzeuge eine Kopie des Basis-Arrays.
+		var round_shapes = base_shapes.duplicate()
+		# Mische das Array zufällig. (Ab Godot 3.2/4.0 gibt es die Methode shuffle.)
+		round_shapes.shuffle()
+		rounds.append(round_shapes)
+	
+	# Optional: Ausgabe der Reihenfolgen zur Kontrolle
+	for i in range(rounds.size()):
+		print("Runde %d: %s" % [i + 1, rounds[i]])
+	
+	# Speichern der ursprünglichen Positionen aus der ersten Runde.
+	# Wir überspringen dabei alle Nodes, deren Namen mit "Zielbereich" beginnen.
+	for shape in $ShapesContainer.get_children():
+		if not shape.name.begins_with("zielbereich") and shape.has_signal("form_completed"):
+			original_positions.append(shape.global_position)
+			shape.connect("form_completed", Callable(self, "_on_form_completed"))
+		else:
+			print("Signal nicht verbunden für Node: ", shape.name)
+
+func _on_form_completed():
+	form_completed += 1
+	print("Eine Form abgeschlossen in Runde ", current_round + 1, ". Aktueller Zähler: ", form_completed)
+	if form_completed >= 3:
+		if current_round < rounds.size() - 1:
+			print("Runde ", current_round + 1, " abgeschlossen. Lade nächste Runde.")
+			next_round()
+		else:
+			print("Alle Runden abgeschlossen. Level complete!")
+			show_level_complete()
+
+func next_round():
+	# Entferne alle Formen (aber nicht die Zielbereiche).
+	for shape in $ShapesContainer.get_children():
+		if not shape.name.begins_with("zielbereich"):
+			shape.queue_free()
+	
+	current_round += 1
+	form_completed = 0
+	
+	# Für die neue Runde werden die Formen in der zuvor festgelegten (gemischten) Reihenfolge instanziiert.
+	for i in range(rounds[current_round].size()):
+		var shape_scene = load(rounds[current_round][i])
+		var shape_instance = shape_scene.instantiate()
+		$ShapesContainer.add_child(shape_instance)
+		if i < original_positions.size():
+			shape_instance.global_position = original_positions[i]
+		shape_instance.connect("form_completed", Callable(self, "_on_form_completed"))
+		
+func show_level_complete():
+	overlay.visible = true
+	print("Overlay sichtbar: Level abgeschlossen!")
+	
+func toggle_pause():
+	if get_tree().paused:
+		get_tree().paused = false
+		pause_menu.hide()
+	else:
+		get_tree().paused = true
+		pause_menu.show()
+
+func _input(event):
+	if event.is_action_pressed("ui_pause"):
+		toggle_pause()
+		
+func _on_pausebutton_pressed() -> void:
+	print("Pause-Button wurde gedrückt")
+	toggle_pause()

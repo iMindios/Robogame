@@ -1,0 +1,64 @@
+[gd_scene load_steps=10 format=3 uid="uid://bifiqdrxkaj0c"]
+
+[ext_resource type="Script" uid="uid://da20gwvtq5edv" path="res://scripts/Herz.gd" id="1_gjvyy"]
+[ext_resource type="Shader" uid="uid://ctyrhyqjmvcb4" path="res://assets/graphics/shapes/NeonShader.gdshader" id="2_jh408"]
+[ext_resource type="Texture2D" uid="uid://5jawu0gnpta5" path="res://assets/graphics/shapes/Herz_gausch.png" id="3_uejmi"]
+[ext_resource type="Texture2D" uid="uid://biwdopyynqonc" path="res://assets/graphics/shapes/Herz.png" id="4_rfd18"]
+[ext_resource type="Shader" uid="uid://b02y0vfay8jp7" path="res://assets/graphics/shapes/test.gdshader" id="5_jh408"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_r4asd"]
+radius = 85.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nxj73"]
+shader = ExtResource("2_jh408")
+shader_parameter/neon_color = Vector4(0, 0, 0, 0)
+shader_parameter/dodge_strength = 1.0
+shader_parameter/overlay_color = Vector4(1, 1, 1, 1)
+shader_parameter/overlay_strength = 0.757
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_ap5c5"]
+blend_mode = 1
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_uejmi"]
+shader = ExtResource("5_jh408")
+shader_parameter/smear_strength = 0.313
+shader_parameter/smear_length = 0.15
+shader_parameter/smear_speed = 1.412
+shader_parameter/sample_count = 16
+
+[node name="weis_herz" type="Area2D"]
+collision_layer = 8192
+collision_mask = 8192
+script = ExtResource("1_gjvyy")
+
+[node name="14" type="CollisionShape2D" parent="."]
+position = Vector2(0, -1)
+shape = SubResource("CircleShape2D_r4asd")
+
+[node name="Herz_gausch" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_nxj73")
+scale = Vector2(0.09, 0.09)
+texture = ExtResource("3_uejmi")
+
+[node name="Herz_gausch2" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_nxj73")
+scale = Vector2(0.09, 0.09)
+texture = ExtResource("3_uejmi")
+
+[node name="Herz" type="Sprite2D" parent="Herz_gausch2"]
+visible = false
+modulate = Color(1, 1, 1, 0.113725)
+material = SubResource("CanvasItemMaterial_ap5c5")
+texture = ExtResource("4_rfd18")
+
+[node name="Herz2" type="Sprite2D" parent="Herz_gausch2"]
+modulate = Color(1, 1, 1, 0.231373)
+material = SubResource("CanvasItemMaterial_ap5c5")
+scale = Vector2(1.2, 1.2)
+texture = ExtResource("4_rfd18")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.462745)
+material = SubResource("ShaderMaterial_uejmi")
+scale = Vector2(0.09, 0.09)
+texture = ExtResource("3_uejmi")

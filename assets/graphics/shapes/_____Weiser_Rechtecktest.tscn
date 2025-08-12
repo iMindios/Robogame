@@ -1,0 +1,87 @@
+[gd_scene load_steps=9 format=3 uid="uid://mhnotorh0m0c"]
+
+[ext_resource type="Shader" uid="uid://dqav2xvno28px" path="res://assets/graphics/shapes/strahlen.gdshader" id="1_fwbm2"]
+[ext_resource type="Texture2D" uid="uid://by2p5u6reomfb" path="res://assets/graphics/shapes/Rechteck_gausch.png" id="2_uvbof"]
+[ext_resource type="Texture2D" uid="uid://dfe776su7bkqi" path="res://assets/graphics/shapes/Rechteck.png" id="3_3psp4"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_kyoen"]
+radius = 85.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_u53wp"]
+shader = ExtResource("1_fwbm2")
+shader_parameter/smear_strength = 0.895
+shader_parameter/smear_length = 0.032
+shader_parameter/smear_speed = 2.084
+shader_parameter/sample_count = 8
+shader_parameter/oscillation_amplitude = 0.025
+shader_parameter/ray_color = Vector4(0.1, 0.1, 0.1, 0.1)
+shader_parameter/ray_count = 12.0
+shader_parameter/ray_amplitude = 0.1
+shader_parameter/ray_speed = 1.0
+shader_parameter/ray_glow_start = 0.181
+shader_parameter/ray_glow_end = 1.841
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_qvses"]
+blend_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_tekn0"]
+blend_mode = 1
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_myfil"]
+shader = ExtResource("1_fwbm2")
+shader_parameter/smear_strength = 0.7
+shader_parameter/smear_length = 0.15
+shader_parameter/smear_speed = 2.0
+shader_parameter/sample_count = 16
+shader_parameter/oscillation_amplitude = 0.067
+shader_parameter/ray_color = Vector4(0.1, 0.1, 0.1, 0.1)
+shader_parameter/ray_count = 12.0
+shader_parameter/ray_amplitude = 0.285
+shader_parameter/ray_speed = 1.0
+shader_parameter/ray_glow_start = 0.315
+shader_parameter/ray_glow_end = 1.337
+
+[node name="Weißer_Rechteck" type="Area2D"]
+collision_layer = 512
+collision_mask = 512
+
+[node name="10" type="CollisionShape2D" parent="."]
+position = Vector2(0, -1)
+shape = SubResource("CircleShape2D_kyoen")
+
+[node name="Rechteck_gausch" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.996078)
+material = SubResource("ShaderMaterial_u53wp")
+scale = Vector2(0.09, 0.09)
+texture = ExtResource("2_uvbof")
+
+[node name="Rechteck" type="Sprite2D" parent="Rechteck_gausch"]
+modulate = Color(1, 1, 1, 0.160784)
+material = SubResource("CanvasItemMaterial_qvses")
+texture = ExtResource("3_3psp4")
+
+[node name="Rechteck_gausch2" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.0823529)
+material = SubResource("ShaderMaterial_u53wp")
+scale = Vector2(0.09, 0.09)
+texture = ExtResource("2_uvbof")
+
+[node name="Rechteck2" type="Sprite2D" parent="Rechteck_gausch2"]
+modulate = Color(1, 1, 1, 0.435294)
+material = SubResource("CanvasItemMaterial_tekn0")
+scale = Vector2(1.33, 1.33)
+texture = ExtResource("3_3psp4")
+
+[node name="Rechteck_gausch3" type="Sprite2D" parent="."]
+visible = false
+modulate = Color(1, 1, 1, 0.470588)
+self_modulate = Color(0.27, 0.27, 0.27, 0.34902)
+material = SubResource("ShaderMaterial_u53wp")
+scale = Vector2(0.09, 0.09)
+texture = ExtResource("2_uvbof")
+
+[node name="Rechteck2" type="Sprite2D" parent="Rechteck_gausch3"]
+modulate = Color(1, 1, 1, 0.0509804)
+material = SubResource("ShaderMaterial_myfil")
+scale = Vector2(1.33, 1.33)
+texture = ExtResource("3_3psp4")

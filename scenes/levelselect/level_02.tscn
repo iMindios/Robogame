@@ -1,0 +1,142 @@
+[gd_scene load_steps=18 format=3 uid="uid://et4pn2m5t5ij"]
+
+[ext_resource type="Script" uid="uid://dlasg8s81gd61" path="res://scripts/level_02.gd" id="1_ibgri"]
+[ext_resource type="Texture2D" uid="uid://yor3xe2lc6r2" path="res://assets/graphics/UI/gear.png" id="2_jwm3y"]
+[ext_resource type="Shader" uid="uid://cq7gon8uak7ta" path="res://assets/graphics/shapes/colordodgecoloroverlayBLENDADD.gdshader" id="2_k5n00"]
+[ext_resource type="PackedScene" uid="uid://bifiqdrxkaj0c" path="res://assets/graphics/shapes/weis_herz.tscn" id="5_ibgri"]
+[ext_resource type="PackedScene" uid="uid://cd3cy51o8iuba" path="res://assets/graphics/shapes/weis_stern.tscn" id="5_jwm3y"]
+[ext_resource type="PackedScene" uid="uid://cn3xouw8038d6" path="res://assets/graphics/shapes/weis_raute.tscn" id="5_k5n00"]
+[ext_resource type="PackedScene" uid="uid://611yajc80x7o" path="res://assets/graphics/shapes/zielbereich_raute.tscn" id="8_0ojr8"]
+[ext_resource type="PackedScene" uid="uid://bi0cfoida67sd" path="res://assets/graphics/shapes/zielbereich_stern.tscn" id="8_jwm3y"]
+[ext_resource type="PackedScene" uid="uid://bay3nwvtfrouj" path="res://assets/graphics/shapes/zielbereich_herz.tscn" id="8_xpg25"]
+[ext_resource type="Script" uid="uid://c073e85f80v82" path="res://scripts/level_complete_overlay.gd" id="9_nonoj"]
+[ext_resource type="Theme" uid="uid://bm0i38eb73x2i" path="res://KinderspielTheme.tres" id="10_nf278"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bqij0"]
+shader = ExtResource("2_k5n00")
+shader_parameter/neon_color = Vector4(0, 1, 0.8, 1)
+shader_parameter/dodge_strength = 0.403
+shader_parameter/overlay_color = Vector4(1, 1, 1, 1)
+shader_parameter/overlay_strength = 0.285
+
+[sub_resource type="Curve" id="Curve_crx7u"]
+_data = [Vector2(0.00833333, 0.011236), 0.0, 0.0, 0, 0, Vector2(0.216667, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_l3y41"]
+curve = SubResource("Curve_crx7u")
+
+[sub_resource type="Gradient" id="Gradient_npm7d"]
+colors = PackedColorArray(0, 0, 0, 1, 0.0096, 0.139947, 0.16, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_pia84"]
+gradient = SubResource("Gradient_npm7d")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3dxxx"]
+bg_color = Color(0.19, 0.19, 0.19, 0.941176)
+
+[node name="Level02" type="Node2D"]
+script = ExtResource("1_ibgri")
+
+[node name="Ui Canva" type="CanvasLayer" parent="."]
+
+[node name="Pausebutton" type="TextureButton" parent="Ui Canva"]
+material = SubResource("ShaderMaterial_bqij0")
+offset_left = 1195.0
+offset_top = 8.0
+offset_right = 5921.0
+offset_bottom = 4734.0
+scale = Vector2(0.0150308, 0.0153394)
+mouse_filter = 1
+texture_normal = ExtResource("2_jwm3y")
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(642, 356)
+scale = Vector2(5.03639, 748.614)
+texture = SubResource("CurveTexture_l3y41")
+
+[node name="Background2" type="Sprite2D" parent="."]
+position = Vector2(642, 356)
+scale = Vector2(20.04, 11.4)
+texture = SubResource("GradientTexture2D_pia84")
+
+[node name="PopupPanel" type="PopupPanel" parent="."]
+visible = true
+
+[node name="ShapesContainer" type="Container" parent="."]
+offset_left = 622.0
+offset_top = 319.0
+offset_right = 662.0
+offset_bottom = 359.0
+
+[node name="weis_stern" parent="ShapesContainer" instance=ExtResource("5_jwm3y")]
+position = Vector2(-315, -182)
+
+[node name="weis_raute" parent="ShapesContainer" instance=ExtResource("5_k5n00")]
+position = Vector2(-331, 250)
+
+[node name="weis_herz" parent="ShapesContainer" instance=ExtResource("5_ibgri")]
+position = Vector2(-459, 44)
+
+[node name="zielbereich_herz" parent="ShapesContainer" instance=ExtResource("8_xpg25")]
+position = Vector2(361, -163)
+
+[node name="zielbereich_raute" parent="ShapesContainer" instance=ExtResource("8_0ojr8")]
+position = Vector2(360, 271)
+
+[node name="zielbereich_stern" parent="ShapesContainer" instance=ExtResource("8_jwm3y")]
+position = Vector2(202, 53)
+
+[node name="Spawnpoints" type="Node2D" parent="ShapesContainer"]
+position = Vector2(-622, -319)
+
+[node name="Spawn1" type="Marker2D" parent="ShapesContainer/Spawnpoints"]
+position = Vector2(201, 178)
+
+[node name="Spawn2" type="Marker2D" parent="ShapesContainer/Spawnpoints"]
+position = Vector2(330, 341)
+
+[node name="Spawn3" type="Marker2D" parent="ShapesContainer/Spawnpoints"]
+position = Vector2(202, 492)
+
+[node name="Overlay" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_left = 622.0
+offset_top = 319.0
+offset_right = 662.0
+offset_bottom = 359.0
+script = ExtResource("9_nonoj")
+
+[node name="Panel" type="Panel" parent="Overlay"]
+layout_mode = 0
+offset_left = -663.0
+offset_top = -374.0
+offset_right = -623.0
+offset_bottom = -334.0
+scale = Vector2(34.9853, 21.3158)
+theme_override_styles/panel = SubResource("StyleBoxFlat_3dxxx")
+
+[node name="Label" type="Label" parent="Overlay"]
+layout_mode = 0
+offset_left = -377.0
+offset_top = -57.0
+offset_right = 461.0
+offset_bottom = 3.0
+theme = ExtResource("10_nf278")
+theme_override_font_sizes/font_size = 46
+text = "Gut gemacht! Du hast das Level abgeschlossen."
+
+[node name="Button" type="Button" parent="Overlay"]
+layout_mode = 0
+offset_left = -74.0
+offset_top = 48.0
+offset_right = 72.0
+offset_bottom = 115.0
+theme = ExtResource("10_nf278")
+theme_override_font_sizes/font_size = 43
+text = "Weiter"
+
+[connection signal="pressed" from="Ui Canva/Pausebutton" to="." method="_on_pausebutton_pressed"]
+[connection signal="pressed" from="Overlay/Button" to="Overlay" method="_on_button_pressed"]

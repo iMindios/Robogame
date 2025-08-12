@@ -1,0 +1,59 @@
+[gd_scene load_steps=8 format=3 uid="uid://cmv0tvk1djax6"]
+
+[ext_resource type="Shader" uid="uid://ctyrhyqjmvcb4" path="res://assets/graphics/shapes/NeonShader.gdshader" id="1_j1guu"]
+[ext_resource type="Texture2D" uid="uid://by2p5u6reomfb" path="res://assets/graphics/shapes/Rechteck_gausch.png" id="2_n421m"]
+[ext_resource type="Texture2D" uid="uid://dfe776su7bkqi" path="res://assets/graphics/shapes/Rechteck.png" id="3_j1guu"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vmsas"]
+radius = 85.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1fb4n"]
+shader = ExtResource("1_j1guu")
+shader_parameter/neon_color = Vector4(1, 1, 1, 1)
+shader_parameter/dodge_strength = 0.311
+shader_parameter/overlay_color = Vector4(1, 1, 1, 1)
+shader_parameter/overlay_strength = 0.429
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_kppfi"]
+blend_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_fjbwf"]
+blend_mode = 1
+
+[node name="zielbereich_rechteck" type="Area2D"]
+collision_layer = 512
+collision_mask = 512
+input_pickable = false
+
+[node name="10" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_vmsas")
+
+[node name="Rechteck_gausch" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.996078)
+material = SubResource("ShaderMaterial_1fb4n")
+scale = Vector2(0.09, 0.09)
+texture = ExtResource("2_n421m")
+
+[node name="Rechteck" type="Sprite2D" parent="Rechteck_gausch"]
+modulate = Color(1, 1, 1, 0.160784)
+material = SubResource("CanvasItemMaterial_kppfi")
+texture = ExtResource("3_j1guu")
+
+[node name="Rechteck_gausch2" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.423529)
+material = SubResource("ShaderMaterial_1fb4n")
+scale = Vector2(0.09, 0.09)
+texture = ExtResource("2_n421m")
+
+[node name="Rechteck" type="Sprite2D" parent="Rechteck_gausch2"]
+modulate = Color(1, 1, 1, 0.447059)
+self_modulate = Color(1, 1, 1, 0.423529)
+material = SubResource("CanvasItemMaterial_kppfi")
+scale = Vector2(1.2, 1.2)
+texture = ExtResource("3_j1guu")
+
+[node name="Rechteck2" type="Sprite2D" parent="Rechteck_gausch2"]
+modulate = Color(1, 1, 1, 0.435294)
+material = SubResource("CanvasItemMaterial_fjbwf")
+scale = Vector2(1.33, 1.33)
+texture = ExtResource("3_j1guu")

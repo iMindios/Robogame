@@ -1,0 +1,58 @@
+[gd_scene load_steps=9 format=3 uid="uid://cp124cl6o3bpq"]
+
+[ext_resource type="Script" uid="uid://cwe726xvw0f7r" path="res://scripts/Quadrat.gd" id="1_7iiy6"]
+[ext_resource type="Material" uid="uid://7cvjenelroda" path="res://assets/graphics/shapes/Neon shader.tres" id="1_b55k6"]
+[ext_resource type="Texture2D" uid="uid://b22kovlt2y6i1" path="res://assets/graphics/shapes/Quadrat.png" id="2_7iiy6"]
+[ext_resource type="Shader" uid="uid://b02y0vfay8jp7" path="res://assets/graphics/shapes/test.gdshader" id="3_we52g"]
+[ext_resource type="Texture2D" uid="uid://dlmuvn1l0c180" path="res://assets/graphics/shapes/Quadrat_gausch.png" id="4_we52g"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_w582u"]
+radius = 47.2856
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_we52g"]
+shader = ExtResource("3_we52g")
+shader_parameter/smear_strength = 1.397
+shader_parameter/smear_length = 0.037
+shader_parameter/smear_speed = 2.0
+shader_parameter/sample_count = 29
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_jeial"]
+blend_mode = 1
+
+[node name="weis_quadrat" type="Area2D"]
+material = ExtResource("1_b55k6")
+collision_layer = 2048
+collision_mask = 2048
+script = ExtResource("1_7iiy6")
+
+[node name="12" type="CollisionShape2D" parent="."]
+position = Vector2(0, -1)
+scale = Vector2(1.96677, 2.06368)
+shape = SubResource("CircleShape2D_w582u")
+
+[node name="Quadrat2" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_we52g")
+scale = Vector2(0.09, 0.09)
+texture = ExtResource("4_we52g")
+
+[node name="Quadrat" type="Sprite2D" parent="Quadrat2"]
+modulate = Color(1, 1, 1, 0.176471)
+material = SubResource("CanvasItemMaterial_jeial")
+texture = ExtResource("2_7iiy6")
+
+[node name="Quadrat3" type="Sprite2D" parent="Quadrat2"]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_we52g")
+texture = ExtResource("4_we52g")
+
+[node name="Quadrat4" type="Sprite2D" parent="Quadrat2/Quadrat3"]
+modulate = Color(1, 1, 1, 0.113725)
+material = SubResource("CanvasItemMaterial_jeial")
+texture = ExtResource("2_7iiy6")
+
+[node name="Quadrat5" type="Sprite2D" parent="Quadrat2/Quadrat3"]
+modulate = Color(1, 1, 1, 0.231373)
+material = SubResource("CanvasItemMaterial_jeial")
+scale = Vector2(1.2, 1.2)
+texture = ExtResource("2_7iiy6")

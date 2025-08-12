@@ -1,0 +1,80 @@
+[gd_scene load_steps=10 format=3 uid="uid://btjjgflmvtn22"]
+
+[ext_resource type="Shader" uid="uid://ctyrhyqjmvcb4" path="res://assets/graphics/shapes/NeonShader.gdshader" id="2_apnw5"]
+[ext_resource type="Texture2D" uid="uid://q7ejshl10fi5" path="res://assets/graphics/shapes/Dreieck_gausch.png" id="3_y8cxw"]
+[ext_resource type="Texture2D" uid="uid://d12on51in5o3r" path="res://assets/graphics/shapes/Dreieck.png" id="4_hsrai"]
+[ext_resource type="Shader" uid="uid://cq7gon8uak7ta" path="res://assets/graphics/shapes/colordodgecoloroverlayBLENDADD.gdshader" id="5_r32jc"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vmsas"]
+radius = 85.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_l76t5"]
+shader = ExtResource("2_apnw5")
+shader_parameter/neon_color = Vector4(1, 1, 1, 1)
+shader_parameter/dodge_strength = 0.053
+shader_parameter/overlay_color = Vector4(1, 1, 1, 1)
+shader_parameter/overlay_strength = 0.118
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_7ns25"]
+blend_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_q7d76"]
+blend_mode = 1
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_08ecb"]
+shader = ExtResource("5_r32jc")
+shader_parameter/neon_color = Vector4(1, 1, 1, 1)
+shader_parameter/dodge_strength = 0.32
+shader_parameter/overlay_color = Vector4(0, 0, 0, 0)
+shader_parameter/overlay_strength = 0.547
+
+[node name="zielbereich_dreieck" type="Area2D"]
+collision_layer = 1024
+collision_mask = 1024
+input_pickable = false
+
+[node name="11" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_vmsas")
+
+[node name="Quadrat2" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.996078)
+material = SubResource("ShaderMaterial_l76t5")
+position = Vector2(0, -13)
+scale = Vector2(0.09, 0.09)
+texture = ExtResource("3_y8cxw")
+
+[node name="Quadrat" type="Sprite2D" parent="Quadrat2"]
+modulate = Color(1, 1, 1, 0.160784)
+material = SubResource("CanvasItemMaterial_7ns25")
+position = Vector2(0, 1.71661e-05)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("4_hsrai")
+
+[node name="Quadrat3" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.752941)
+material = SubResource("ShaderMaterial_l76t5")
+position = Vector2(0, -13)
+scale = Vector2(0.09, 0.09)
+texture = ExtResource("3_y8cxw")
+
+[node name="Quadrat5" type="Sprite2D" parent="Quadrat3"]
+modulate = Color(1, 1, 1, 0.658824)
+self_modulate = Color(1, 1, 1, 0.34902)
+material = SubResource("CanvasItemMaterial_7ns25")
+position = Vector2(0, -55.5555)
+scale = Vector2(1.1, 1.1)
+texture = ExtResource("4_hsrai")
+
+[node name="Quadrat6" type="Sprite2D" parent="Quadrat3"]
+modulate = Color(1, 1, 1, 0.133333)
+material = SubResource("CanvasItemMaterial_q7d76")
+position = Vector2(0, -100)
+scale = Vector2(1.33, 1.33)
+texture = ExtResource("4_hsrai")
+
+[node name="Quadrat4" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.341176)
+material = SubResource("ShaderMaterial_08ecb")
+position = Vector2(0, -13)
+scale = Vector2(0.09, 0.09)
+texture = ExtResource("3_y8cxw")

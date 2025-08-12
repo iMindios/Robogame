@@ -1,0 +1,52 @@
+[gd_scene load_steps=7 format=3 uid="uid://p606aq617esd"]
+
+[ext_resource type="Shader" uid="uid://ctyrhyqjmvcb4" path="res://assets/graphics/shapes/NeonShader.gdshader" id="2_crmbj"]
+[ext_resource type="Texture2D" uid="uid://dlmuvn1l0c180" path="res://assets/graphics/shapes/Quadrat_gausch.png" id="3_ux5c0"]
+[ext_resource type="Texture2D" uid="uid://b22kovlt2y6i1" path="res://assets/graphics/shapes/Quadrat.png" id="4_o8e18"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_3twiq"]
+radius = 85.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mnv4w"]
+shader = ExtResource("2_crmbj")
+shader_parameter/neon_color = Vector4(0, 0, 0, 0)
+shader_parameter/dodge_strength = 1.0
+shader_parameter/overlay_color = Vector4(1, 1, 1, 1)
+shader_parameter/overlay_strength = 0.757
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_8ktqe"]
+blend_mode = 1
+
+[node name="zielbereich_quadrat" type="Area2D"]
+collision_layer = 2048
+collision_mask = 2048
+input_pickable = false
+
+[node name="12" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_3twiq")
+
+[node name="Quadrat2" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_mnv4w")
+scale = Vector2(0.09, 0.09)
+texture = ExtResource("3_ux5c0")
+
+[node name="Quadrat" type="Sprite2D" parent="Quadrat2"]
+modulate = Color(1, 1, 1, 0.176471)
+material = SubResource("CanvasItemMaterial_8ktqe")
+texture = ExtResource("4_o8e18")
+
+[node name="Quadrat3" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_mnv4w")
+scale = Vector2(0.09, 0.09)
+texture = ExtResource("3_ux5c0")
+
+[node name="Quadrat4" type="Sprite2D" parent="Quadrat3"]
+modulate = Color(1, 1, 1, 0.113725)
+material = SubResource("CanvasItemMaterial_8ktqe")
+texture = ExtResource("4_o8e18")
+
+[node name="Quadrat5" type="Sprite2D" parent="Quadrat3"]
+modulate = Color(1, 1, 1, 0.231373)
+material = SubResource("CanvasItemMaterial_8ktqe")
+scale = Vector2(1.2, 1.2)
+texture = ExtResource("4_o8e18")

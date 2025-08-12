@@ -1,0 +1,74 @@
+[gd_scene load_steps=10 format=3 uid="uid://bh3i0qkcg13bq"]
+
+[ext_resource type="Script" uid="uid://c7u66jyfmahd" path="res://scenes/LevelSelect/level_01.gd" id="1_ghvup"]
+[ext_resource type="Texture2D" uid="uid://l4f3trwae0hb" path="res://assets/Graphics/shapes/Roter Quadrat.png" id="1_mld3l"]
+[ext_resource type="Texture2D" uid="uid://yor3xe2lc6r2" path="res://assets/Graphics/UI/gear.png" id="3_ra4tc"]
+[ext_resource type="Texture2D" uid="uid://dw0syukwkq2wa" path="res://assets/Graphics/shapes/Orangene Raute.png" id="4_hbsd8"]
+[ext_resource type="PackedScene" uid="uid://qsmgkd52jlsm" path="res://assets/Graphics/shapes/Orangene_Raute.tscn" id="4_vmsas"]
+
+[sub_resource type="Gradient" id="Gradient_ra4tc"]
+offsets = PackedFloat32Array(0, 0.564935, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.412152, 0.412152, 0.412152, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_vmsas"]
+gradient = SubResource("Gradient_ra4tc")
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ghvup"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_mld3l")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vmsas"]
+radius = 44.4185
+
+[node name="Level01" type="Node2D"]
+script = ExtResource("1_ghvup")
+
+[node name="Ui Canva" type="CanvasLayer" parent="."]
+
+[node name="Pausebutton" type="TextureButton" parent="Ui Canva"]
+offset_left = 1195.0
+offset_top = 8.0
+offset_right = 5921.0
+offset_bottom = 4734.0
+scale = Vector2(0.0150308, 0.0153394)
+mouse_filter = 1
+texture_normal = ExtResource("3_ra4tc")
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(642, 356)
+scale = Vector2(20.2371, -11.7157)
+texture = SubResource("GradientTexture2D_vmsas")
+
+[node name="Form_1" type="AnimatedSprite2D" parent="."]
+position = Vector2(39, 36)
+sprite_frames = SubResource("SpriteFrames_ghvup")
+
+[node name="PopupPanel" type="PopupPanel" parent="."]
+visible = true
+
+[node name="Zielbereich" type="Area2D" parent="."]
+position = Vector2(1009, 254)
+collision_layer = 512
+collision_mask = 512
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Zielbereich"]
+shape = SubResource("CircleShape2D_vmsas")
+
+[node name="Raute bereich" type="Sprite2D" parent="Zielbereich"]
+modulate = Color(1, 1, 1, 0.509804)
+scale = Vector2(2, 2)
+texture = ExtResource("4_hbsd8")
+
+[node name="Orangene Raute" parent="." instance=ExtResource("4_vmsas")]
+position = Vector2(219, 191)
+collision_layer = 512
+collision_mask = 512
+
+[connection signal="pressed" from="Ui Canva/Pausebutton" to="." method="_on_pausebutton_pressed"]
